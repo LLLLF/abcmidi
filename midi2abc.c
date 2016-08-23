@@ -46,7 +46,7 @@
  * based on public domain 'midifilelib' package.
  */
 
-#define VERSION "2.99 October 18 2015"
+#define VERSION "3.00 July 20 2016"
 #define SPLITCODE
 
 /* Microsoft Visual C++ Version 6.0 or higher */
@@ -2529,7 +2529,8 @@ int trackno,  anacrusis;
       }
       else if (featurecount == 0) {
           /* note grouping algorithm */
-          if ((barsize/parts_per_unitlen) % 3 == 0) {
+          /* [SS] 2016-07-20 waltz is a special case */
+          if ((barsize/parts_per_unitlen) % 3 == 0 && asig != 3) {
             if ( (barnotes/parts_per_unitlen) % 3 == 0
                &&(barnotes%parts_per_unitlen) == 0) {
               fprintf(outhandle," ");
@@ -2696,7 +2697,8 @@ int trackno,  anacrusis;
       }
       else if (featurecount == 0) {
           /* note grouping algorithm */
-          if ((barsize/parts_per_unitlen) % 3 == 0) {
+          /* [SS] 2016-07-20 waltz is a special case */
+          if ((barsize/parts_per_unitlen) % 3 == 0 && asig != 3) {
             if ( (barnotes/parts_per_unitlen) % 3 == 0
                &&(barnotes%parts_per_unitlen) == 0) {
               fprintf(outhandle," ");
@@ -2845,7 +2847,8 @@ int trackno,  anacrusis;
       }
       else if (featurecount == 0) {
           /* note grouping algorithm */
-          if ((barsize/parts_per_unitlen) % 3 == 0) {
+          /* [SS] 2016-07-20 waltz is a special case */
+          if ((barsize/parts_per_unitlen) % 3 == 0 && asig != 3) {
             if ( (barnotes/parts_per_unitlen) % 3 == 0
                &&(barnotes%parts_per_unitlen) == 0) {
               fprintf(outhandle," ");

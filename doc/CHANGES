@@ -12149,3 +12149,13 @@ code from event_note, so that key modifiers were transposed
 the same way the notes in the music body are modified.
 
 
+July 20 2016
+
+Midi2abc: note grouping for 3/4 time is incorrect.
+For 3/4 meter midi2abc groups the notes as EFG AGF instead
+of EF GA GF in a bar.
+
+Fix: in printtrack_with_splits(), printtrack_split_voice(),
+and printtrack(), also check for waltz time (asig == 3)
+before grouping notes as compound rhythm.
+
