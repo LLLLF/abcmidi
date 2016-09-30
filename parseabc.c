@@ -35,7 +35,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define SIZE_ABBREVIATIONS ('Z' - 'H' + 1)
+/* #define SIZE_ABBREVIATIONS ('Z' - 'H' + 1) [SS] 2016-09-20 */
+#define SIZE_ABBREVIATIONS 58
 
 /* [SS] 2015-09-28 changed _snprintf_s to _snprintf */
 #ifdef _MSC_VER
@@ -1899,7 +1900,8 @@ init_abbreviations ()
 {
   int i;
 
-  for (i = 0; i < 'Z' - 'H'; i++)
+  /* for (i = 0; i < 'Z' - 'H'; i++) [SS] 2016-09-25 */
+  for (i = 0; i < 'z' - 'A'; i++) /* [SS] 2016-09-25 */
     {
       abbreviation[i] = NULL;
     };
@@ -1911,11 +1913,12 @@ record_abbreviation (char symbol, char *string)
 {
   int index;
 
-  if ((symbol < 'H') || (symbol > 'Z'))
+  /* if ((symbol < 'H') || (symbol > 'Z')) [SS] 2016-09-20 */
+     if ((symbol < 'A') || (symbol > 'z'))
     {
       return;
     };
-  index = symbol - 'H';
+  index = symbol - 'A';
   if (abbreviation[index] != NULL)
     {
       free (abbreviation[index]);
@@ -1927,13 +1930,14 @@ char *
 lookup_abbreviation (char symbol)
 /* return string which s abbreviates */
 {
-  if ((symbol < 'H') || (symbol > 'Z'))
+  /* if ((symbol < 'H') || (symbol > 'Z'))  [SS] 2016-09-25 */
+  if ((symbol < 'A') || (symbol > 'z'))
     {
       return (NULL);
     }
   else
     {
-      return (abbreviation[symbol - 'H']);
+      return (abbreviation[symbol - 'A']); /* [SS] 2016-09-20 */
     };
 }
 
@@ -2098,7 +2102,8 @@ parsefield (key, field)
 	char *expansion;
 
 	skipspace (&place);
-	if ((*place >= 'H') && (*place <= 'Z'))
+	/* if ((*place >= 'H') && (*place <= 'Z')) [SS] 2016-09-20 */
+	if ((*place >= 'A') && (*place <= 'z'))  /* [SS] 2016-09-20 */
 	  {
 	    symbol = *place;
 	    place = place + 1;
@@ -2678,7 +2683,7 @@ parsemusic (field)
 	      {
 		char msg[40];
 
-		if ((*p >= 'H') && (*p <= 'Z'))
+		if ((*p >= 'A') && (*p <= 'z')) /* [SS] 2016-09-20 */
 		  {
 		    event_reserved (*p);
 		  }

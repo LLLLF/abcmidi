@@ -12159,3 +12159,12 @@ Fix: in printtrack_with_splits(), printtrack_split_voice(),
 and printtrack(), also check for waltz time (asig == 3)
 before grouping notes as compound rhythm.
 
+
+September 20 2016 and September 25 2016
+
+Abc2midi: only handles user defined symbols between 'H' and 'Z'.
+
+Fix: allow user defined symbols between 'A' and 'z'. Also applies
+to abc2abc and yaps. Parseabc.c was upgraded.
+
+

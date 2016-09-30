@@ -184,7 +184,7 @@ int main()
 
  */
 
-#define VERSION "3.88 January 08 2016 abc2midi" 
+#define VERSION "3.90 September 25 2016 abc2midi" 
 
 /* enables reading V: indication in header */
 #define XTEN1 1
