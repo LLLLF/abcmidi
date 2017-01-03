@@ -1,4 +1,4 @@
-.TH MIDI2ABC 1 "10 March 2008"
+.TH MIDI2ABC 1 "1 January 2017"
 .SH NAME
 \fBmidi2abc\fP \- program to convert MIDI format files to abc notation
 .SH SYNOPSIS
@@ -7,7 +7,7 @@ midi2abc \-f \fIinfile\fP [\-xa] [\-ga]
 [\-ppu \fiparts per unit\fP] [\-aul \fidenominator of unit length\fP]
 [\-gu] [\-b \fIbars\fP] [\-Q \fItempo\fP] [\-u \fipulses\fP]
 [\-k \fIkey\fP] [\-c \fIchannel\fP] [\-obpl] [\-bpl \fibars\fP] [\-bps \fPbars\fP]
-[\-o \fIfilename\fP] [\-s] [\-sr \fiunits\fP] [\-sum] [\-nt]
+[\-o \fIfilename\fP] [\-s] [\-sr \fiunits\fP] [\-sum] [\-nb] [\-nt]
 [\-splitbars] [\-splitvoices] [\-midigram] [\-mftext] [\-nogr] [\-title \fistring\fP]
 [\-origin \fistring\fP]
 
@@ -113,8 +113,11 @@ is lengthened to include that rest.
 .B -sum
 print a short summary of the input midi file.
 .TP
+.B -nb
+do not look for broken rhythms
+.TP
 .B -nt
-do not look for triplets or broken rhythm
+do not look for triplets
 .TP
 .B -obpl
 Print only one bar per line instead of 4. For complex music this

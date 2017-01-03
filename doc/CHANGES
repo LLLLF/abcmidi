@@ -12168,3 +12168,22 @@ Fix: allow user defined symbols between 'A' and 'z'. Also applies
 to abc2abc and yaps. Parseabc.c was upgraded.
 
 
+January 01 2017
+
+Midi2abc: There are times when you may wish to suppress broken
+rhythms but still allow triplets. For example,
+
+X:1
+T:A Tune For Paddy: A Pint Of Guiness And One For The Goat
+M:6/8
+K:Emin
+edB AGF | GEE E3 |
+edB AGF | GEE E3 |
+
+Applying abc2midi and midi2abc results in the second and
+forth bar appearing as GEE2<E2 which is not desired.
+
+New feature -nt now suppresses only triplets. To suppress
+broken rhythms like C>D you need to use -nb. 
+
+

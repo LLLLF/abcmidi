@@ -2,12 +2,12 @@
 
 | Program | Version No. |  Date Updated |
 |:--------|:------------|:--------------|
-|midi2abc |version 2.99 |October 18 2015 |
-|abc2midi |version 3.88 |August 11 2015 |
-|abc2abc  |version 1.85 |March 03 2016 |
-|yaps     |version 1.63 |November 15 2015 |
-|abcmatch |version 1.70 |November 15 2015 |
-|midicopy |version 1.22 |November 15 2015 |
+|midi2abc |version 2.96 |August 03 2015 |
+|abc2midi |version 3.70 |August 11 2015 |
+|abc2abc  |version 1.81 |July 02 2015 |
+|yaps     |version 1.62 |May 13 2015 |
+|abcmatch |version 1.67 |May 13 2015 |
+|midicopy |version 1.18 |October 01 2013 |
 
 > 24th January 2002
 > 
@@ -109,13 +109,7 @@ midi2abc <options>
 
 Use only one of `-u` `-gu` `-b` and `-Q` or better none. If none of these are present, the program uses the PPQN header information in the MIDI file to determine the note length in MIDI pulses. This usually results in the best output.
 
-The output of midi2abc is printed to the screen. To save it to a file, use the redirection operator or the `-o` option, e.g.
-
-    midi2abc -f file.mid > file.abc
-
-or
-
-    midi2abc -f file.mid -o file.abc
+The output of midi2abc is printed to the screen. To save it to a file, use the redirection operator or the `-o` option, e.g. `midi2abc -f file.mid > file.abc` or `midi2abc -f file.mid -o file.abc`
 
 By default the program uses the key signature and time signature specified in the MIDI file. If the key signature is not specified, the program will automatically determine the key signature by minimizing the number of accidentals. If there is no time signature found, then 4/4 is assumed. You may also specify a time signature using the `-m` option.  Allowable time signatures are `C`, `4/4`, `3/8`, `2/4` and so on.
 
@@ -192,14 +186,16 @@ These control channel and program selection, transposing and various other featu
 * No field is inherited from above the X: field of the tune.
 * Where an accidental is applied to a tied note that extends across a barline, abc2midi requires that the note beyond the barline must be explicitly given an accidental e.g.
 
-    ^F- | F     - will be reported as an error.
-    ^F- | ^F    - will produce a tied ^F note.
+```
+^F- | F     - will be reported as an error.
+^F- | ^F    - will produce a tied ^F note.
+```
 
-  It is common to see no accidental shown when this occurs in published 
-  printed music.
+It is common to see no accidental shown when this occurs in published 
+printed music.
 
 
-## abc2abc
+## `abc2abc`
 
 ```
 Usage: abc2abc <filename> [-s] [-n X] [-b] [-r] [-e] [-t X]
@@ -226,18 +222,16 @@ Usage: abc2abc <filename> [-s] [-n X] [-b] [-r] [-e] [-t X]
 
 A simple abc checker/re-formatter/transposer. If the -n option is selected, error checking is turned off. 
 
-If a voice is assigned to channel 10 (drum channel) using a
-
-    %%MIDI channel 10
-
-command, then this voice is never transposed.
+If a voice is assigned to channel 10 (drum channel) using a `%%MIDI channel 10` command, then this voice is never transposed.
 
 The `-nokeys` or `-nokeyf` option will set "`K: none`" and place accidentals on all notes that should have accidentals for the expected key signature. The first option will use only sharps; the second option will use only flats.
 
 The `-usekey` option will force the key signature to be `key[sf]` where `sf` is a number between -5 and +5, inclusive.
 
-    sf  -5  -4  -3  -2  -1  0  1  2  3  4  5
-    key Db  Ab  Eb  Bb  F   C  G  D  A  E  B
+```
+sf  -5  -4  -3  -2  -1  0  1  2  3  4  5
+key Db  Ab  Eb  Bb  F   C  G  D  A  E  B
+```
 
 Accidentals will be added to preserve the correct notes. This is useful for some music with many accidentals which does not fit in any specific key signature. If `sf = 0`, abc2abc use `K:none`.
 
@@ -245,16 +239,13 @@ If you want to check an abc tune, it is recommended that you use abc2midi with t
 
 When using the `-P X` option, it may be necessary to insert some field commands such as `K:` or `L:` following the voice X declaration, so that they will be converted and appear in the output.
 
-The output of abc2abc is printed to the screen. To save it to a file, use the redirection operator, e.g.
-
-    abc2abc file.abc -t 2 > newfile.abc
+The output of abc2abc is printed to the screen. To save it to a file, use the redirection operator, e.g. `abc2abc file.abc -t 2 > newfile.abc`
 
 ### Known problems:
 
 * When using the `-n` option on a program with lyrics, a barline in a `w:` field may be carried forward to the next `w:` field.
 
-
-## mftext - MIDI file to text
+## `mftext` - MIDI file to text
 
 This gives a verbose description of what is in a MIDI file. You may wish
 to use it to check the output from abc2midi. It is part of the original
@@ -283,15 +274,9 @@ midicopy copies selected tracks, channels, time interval of the input midi file.
 -replace trk,loc,val
 ```
 
-    midicopy.exe -ver
+`midicopy.exe -ver` will print out something like `1.00 July 11 2004`
 
-will print out something like 
-1.00 July 11 2004
-
-
-    midicopy.exe input.mid output.mid
-
-does nothing interesting except copy the contents of `input.mid` to a new file `output.mid`.
+`midicopy.exe input.mid output.mid` does nothing interesting except copy the contents of `input.mid` to a new file `output.mid`.
 
 If you include the `-from` parameter followed by a midi pulse number, then the program will select the appropriate data starting after the given midi pulse location so that will you play midi file it will start from that midi pulse number. In order to ensure that the right tempo, channel assignments are used, all of these commands prior to that pulse number are also copied.
 
@@ -305,7 +290,7 @@ Similarly, all channels will be copied unless you specify them following keyword
 
 The option `-replace` allows you to overwrite a specific byte given its track number and offset loc, by the byte whose value is val. This is used for changing the program number associated with a channel. The byte is replaced in the output file. If you use the `-replace` option, all other options like `-from`, `-to`, `-chns` etc. are ignored.
 
-`abcmatch.exe`  - see [`abcmatch.txt`](abcmatch.txt)
+`abcmatch.exe` - see [`abcmatch.txt`](abcmatch.txt)
 
 ## A Short Explanation of MIDI
 

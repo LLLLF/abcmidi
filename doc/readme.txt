@@ -1,6 +1,6 @@
 abcMIDI :   abc <-> MIDI conversion utilities
 
-midi2abc version 3.00 July 20 2016
+midi2abc version 3.01 January 01 2017
 abc2midi version 3.90 September 25 2016
 abc2abc  version 1.88 September 25 2016
 yaps     version 1.65 September 25 2016
@@ -14,7 +14,7 @@ J.R.Allwright@westminster.ac.uk
 University of Westminster,
 London, UK
 
-September 2016
+January 2017
 
 Seymour Shlien
 fy733@ncf.ca

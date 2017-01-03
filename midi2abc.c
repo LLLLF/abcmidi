@@ -46,7 +46,7 @@
  * based on public domain 'midifilelib' package.
  */
 
-#define VERSION "3.00 July 20 2016"
+#define VERSION "3.01 January 01 2017"
 #define SPLITCODE
 
 /* Microsoft Visual C++ Version 6.0 or higher */
@@ -129,7 +129,10 @@ int midiprint; /* flag - run midigram instead of midi2abc       */
 int usesplits; /* flag - split measure into parts if needed     */
 #endif
 int restsize; /* smallest rest to absorb                        */
-int no_triplets; /* flag - suppress triplets or broken rhythm   */
+/* [SS] 2017-01-01 */
+/*int no_triplets;  flag - suppress triplets or broken rhythm   */
+int allow_triplets; /* flag to allow triplets                   */
+int allow_broken;   /* flag to allow broken rhythms > <         */
 int obpl = 0; /* flag to specify one bar per abc text line      */
 int nogr = 0; /* flag to put a space between every note         */
 int bars_per_line=4;  /* number of bars per output line         */
@@ -1985,11 +1988,12 @@ int len;
   };
 }
 
-char dospecial(i, barnotes, featurecount)
+char dospecial(i, barnotes, featurecount,allow_broken,allow_triplets)
 /* identify and print out triplets and broken rhythm */
 struct listx* i;
 int* barnotes;
 int* featurecount;
+int allow_broken,allow_triplets;
 {
   int v1, v2, v3, vt;
   int xa, xb;
@@ -2019,7 +2023,8 @@ int* featurecount;
     /* shouldn't happen, but avoids possible divide by zero */
     return(' ');
   };
-  if (((v1+v2)%2 == 0) && ((v1+v2)%3 != 0)) {
+  /* [SS] 2017-01-01 */
+  if (allow_broken == 1 && ((v1+v2)%2 == 0) && ((v1+v2)%3 != 0)) {
     vt = (v1+v2)/2;
       if (vt == validnote(vt)) {
       /* do not try to break a note which cannot be legally expressed */
@@ -2045,6 +2050,7 @@ int* featurecount;
       };
     };
   };
+  if (allow_triplets == 0) return(' '); /* [SS] 2017-01-01 */
   /* look for triplet */
   if (i->next->next != NULL) {
     t3 = i->next->next->note->dtnext;
@@ -2416,8 +2422,8 @@ int trackno,  anacrusis;
     if (gap == 0) {
       /* do triplet here */
       if (featurecount == 0) {
-	if (!no_triplets) {
-	  broken = dospecial(i, &barnotes, &featurecount);
+	if (allow_triplets || allow_broken) { /* [SS] 2017-01-01 */
+	  broken = dospecial(i, &barnotes, &featurecount,allow_broken,allow_triplets);
 	};
       };
 
@@ -2630,8 +2636,8 @@ int trackno,  anacrusis;
       if (i->note->posnum + i->note->xnum == endposnum) lastnote_in_split = 1;
       /* do triplet here */
       if (featurecount == 0) {
-        if (!no_triplets) {
-          broken = dospecial(i, &barnotes, &featurecount);
+        if (allow_triplets || allow_broken) {  /* [SS] 2017-01-01 */
+          broken = dospecial(i, &barnotes, &featurecount,allow_broken,allow_triplets);
         };
       };
 /* ignore any notes that are not in the current splitnum */
@@ -2790,8 +2796,8 @@ int trackno,  anacrusis;
     if (gap == 0) {
       /* do triplet here */
       if (featurecount == 0) {
-        if (!no_triplets) {
-          broken = dospecial(i, &barnotes, &featurecount);
+        if (allow_triplets || allow_broken) {  /* [SS] 2017-01-01 */
+          broken = dospecial(i, &barnotes, &featurecount,allow_broken,allow_triplets);
         };
       };
       /* add notes to chord */
@@ -3274,11 +3280,18 @@ int argc;
     outhandle = stdout;
   };
   arg = getarg("-nt", argc, argv);
-  if (arg == -1) {
-    no_triplets = 0;
+  if (arg == -1) {  /* 2017-01-01 */
+    allow_triplets = 1;
   } 
   else {
-    no_triplets = 1;
+    allow_triplets = 0;
+  };
+  arg = getarg("-nb", argc, argv);
+  if (arg == -1) { /* 2017-01-01 */
+    allow_broken = 1;
+  } 
+  else {
+    allow_broken = 0;
   };
   arg = getarg("-nogr",argc,argv);
   if (arg != -1)
@@ -3328,6 +3341,7 @@ int argc;
     printf("         -sr <number> Absorb short rests following note\n");
     printf("           where <number> specifies its size\n");
     printf("         -sum summary\n");
+    printf("         -nb Do not look for broken rhythms\n");
     printf("         -nt Do not look for triplets or broken rhythm\n");
     printf("         -bpl <number> of bars printed on one line\n");
     printf("         -bps <number> of bars to be printed on staff\n");
