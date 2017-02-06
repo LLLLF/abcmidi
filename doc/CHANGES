@@ -12187,3 +12187,30 @@ New feature -nt now suppresses only triplets. To suppress
 broken rhythms like C>D you need to use -nb. 
 
 
+February 01 2017
+
+abc2midi: %%MIDI gchordbars bug. The gchordbars factor does
+not start working until after the first bar. For the following example,
+
+X:1
+T: gchordbars
+M: 6/8
+L: 1/8
+K: C
+%%MIDI gchordbars 2
+%%MIDI gchord fffhhh
+"G" G6|D6|G6|D6|G6|D6|
+
+The gchord accompaniment is not expanded until after the first
+bar.
+
+Analysis: The variable gchordbarcount needs to be reset to 0  after
+each call to set_gchords(). checkbars() will set gchordbarcount to
+gchordbars if it is 0. Simarly drumbarcount should also be reset
+after each call to set_drums(). The code is still temperamental,
+so ensure that the MIDI gchordbars statement occurs prior to the
+MIDI gchord declaration and precedes the bar line where it will
+be applied.
+
+
+

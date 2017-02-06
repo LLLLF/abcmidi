@@ -425,6 +425,8 @@ char* s;
   g_denom = mtime_denom * seq_len;
   reduce(&g_num, &g_denom);
 /*  printf("%s  %d %d\n",s,g_num,g_denom); */
+  gchordbarcount = 0; /* [SS] 2017-02-02 */
+  /* checkbars() will set gchordbarcount to gchordbars */
 }
 
 void set_drums(s)
@@ -510,6 +512,8 @@ char* s;
   drum_num = mtime_num * 4*drumbars;
   drum_denom = mtime_denom * seq_len;
   reduce(&drum_num, &drum_denom);
+  drumbarcount = 0; /* [SS] 2017-02-02 */
+  /* checkbars() will set drumbarcount to drumbars */
 }
 
 static void checkbar(pass)
