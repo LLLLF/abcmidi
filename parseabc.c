@@ -79,6 +79,7 @@ extern char *strchr ();
 int lineno;
 int parsing_started = 0;
 int parsing, slur;
+int ignore_line = 0; /* [SS] 2017-04-12 */
 int inhead, inbody;
 int parserinchord;
 int ingrace = 0;
@@ -272,6 +273,23 @@ parseroff ()
   slur = 0;
 }
 
+/* [SS] 2017-04-12 */
+void handle_abc2midi_parser (line) 
+char *line;
+{
+char *p;
+p = line;
+if (strncmp(p,"%%MidiOff",9) == 0) {
+  ignore_line = 1;
+  printf("ignore_line = 1\n");
+  }
+if (strncmp(p,"%%MidiOn",8) == 0) {
+  ignore_line = 0;
+  printf("ignore_line = 0\n");
+  }
+}
+
+
 int
 getarg (option, argc, argv)
 /* look for argument 'option' in command line */
@@ -321,7 +339,7 @@ isnumberp (p)
   c = p;
   while (( **c != ' ') && ( **c != TAB) &&  **c != '\0')
     {
-      if (((int) *c >= 0) && ((int) *c <= 9))
+      if (( *c >= 0) &&  (*c <= 9))
 	*c = *c + 1;
       else
 	return 0;
@@ -1298,11 +1316,11 @@ parsekey (str)
 	    };
 	  /* microtone? */
 	  success = sscanf (&word[1], "/%d%c", &b, &c);
-	  if (success > 0)
+	  if (success == 2) /* [SS] 2016-04-10 */
 	    a = 1;
 	  else
 	    success = sscanf (&word[1], "%d/%d%c", &a, &b, &c);
-	  if (success > 0)
+	  if (success == 3) /* [SS] 2016-04-10 */
 	    {
 	      parsed = 1;
 	      j = (int) c - 'A';
@@ -1980,6 +1998,7 @@ parsefield (key, field)
 	  event_error ("second X: field in header");
 	};
       event_refno (x);
+      ignore_line =0; /* [SS] 2017-04-12 */
       init_voicecode ();	/* [SS] 2011-01-01 */
       inhead = 1;
       inbody = 0;
@@ -2242,6 +2261,7 @@ parsemusic (field)
 /* parse a line of abc notes */
 {
   char *p;
+  char c; /* [SS] 2017-04-19 */
   char *comment;
   char endchar;
   int iscomment;
@@ -2287,6 +2307,7 @@ parsemusic (field)
 	}
       else
 	{
+          c = *p; /* [SS] 2017-04-19 */
 	  switch (*p)
 	    {
 	    case '"':
@@ -2521,7 +2542,7 @@ parsemusic (field)
 		    event_error
 		      ("X or Z must be followed by a whole integer");
 		  };
-		event_mrest (n, m);
+		event_mrest (n, m, c);
                 decorators[FERMATA] = 0;  /* [SS] 2014-11-17 */
 		break;
 	      };
@@ -2710,6 +2731,9 @@ parseline (line)
 /* top-level routine for handling a line in abc file */
 {
   char *p, *q;
+
+  handle_abc2midi_parser (line);  /* [SS] 2017-04-12 */
+  if (ignore_line == 1) return; /* [SS] 2017-04-12 */
 
   /*printf("%d parsing : %s\n", lineno, line); */
   strncpy (inputline, line, sizeof inputline);	/* [SS] 2011-06-07 [PHDM] 2012-11-27 */

@@ -1214,10 +1214,11 @@ int decorators[DECSIZE];
   };
 }
 
-void event_mrest(n,m)
+void event_mrest(n,m,c)
 /* multiple bar rest of n/m in the abc */
 /* we check for m == 1 in the parser */
 int n, m;
+char c; /* [SS] 2017-04-19 to distinguish X from Z in abc2abc */
 {
   int i;
   int decorators[DECSIZE];

@@ -122,7 +122,7 @@ extern void event_slur(int t);
 extern void event_sluron(int t);
 extern void event_sluroff(int t);
 extern void event_rest(int decorators[DECSIZE],int n,int m,int type);
-extern void event_mrest(int n,int m);
+extern void event_mrest(int n,int m,char c);
 extern void event_spacing(int n, int m);
 extern void event_bar(int type, char *replist);
 extern void event_space(void);

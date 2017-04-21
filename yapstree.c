@@ -22,7 +22,7 @@
 /* yapstree.c - back-end for abc parser. */
 /* generates a data structure suitable for typeset music */
 
-#define VERSION "1.65 September 25 2016 yaps"
+#define VERSION "1.68 April 19 2017 yaps"
 #include <stdio.h>
 #ifdef USE_INDEX
 #define strchr index
@@ -2887,8 +2887,9 @@ int decorators[DECSIZE];
   xevent_rest(n, m, 0);
 }
 
-void event_mrest(n,m)
+void event_mrest(n,m,c)
 int n, m;
+char c; /* [SS] 2017-04-19 to distinguish X from Z in abc2abc */
 /* A multiple bar rest has been encountered in the abc */
 {
   xevent_rest(1, 1, n);

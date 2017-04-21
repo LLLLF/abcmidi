@@ -21,7 +21,7 @@
 
 /* back-end for outputting (possibly modified) abc */
 
-#define VERSION "1.88 September 25 2016 abc2abc"
+#define VERSION "1.91 April 19 2017 abc2abc"
 
 /* for Microsoft Visual C++ 6.0 or higher */
 #ifdef _MSC_VER
@@ -1638,11 +1638,12 @@ int decorators[DECSIZE];
   };
 }
 
-void event_mrest(n,m)
+void event_mrest(n,m,c)
 int n, m;
+char c; /* [SS] 2017-04-19 to distinguish X from Z */
 {
   inmusic = 1;
-  emit_string("Z");
+  emit_char(c); /* [SS] 2017-04-19 */
   printlen(n,m);
   if (inchord) {
     event_error("Multiple bar rest not allowed in chord");

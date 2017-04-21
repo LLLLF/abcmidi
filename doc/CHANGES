@@ -12213,4 +12213,122 @@ MIDI gchord declaration and precedes the bar line where it will
 be applied.
 
 
+April 10 2017
+
+Abc2midi bug: abc2midi fails to create a midi file for
+
+X:1
+T: Microtone
+M: 4/4
+L: 1/4
+K: G staffscale =1.2
+G F G =F|
+
+staffscale = is a specification for abcm2ps which is not
+recognized by abc2midi. parsekey is attempting to treat
+=1.2 as a specification of a microtone in the key signature.
+sscanf() returns only one parameter instead of 3.
+
+if (j > 7) j = (int) c - 'a';
+if (j > 7 || j < 0) {printf("invalid j = %d\n",j); exit(-1);}
+
+j is not a valid value because the variable c is 0.
+
+
+
+Fix: changed
+
+success = sscanf (&word[1], "%d/%d%c", &a, &b, &c);
+          if (success > 0)
+
+to
+
+success = sscanf (&word[1], "%d/%d%c", &a, &b, &c);
+          if (success == 3)
+
+
+
+April 12 2017
+
+Abc2midi,Abc2abc,Yaps new feature: Abcm2ps has many features
+for creating a nice document. Abc2midi and other programs in
+the abcmidi package may get confused when it sees certain lines.
+I have introduced two new commands
+
+%%MidiOff
+and
+%%MidiOn
+
+which tell abc2midi and other programs to not parse the lines
+in between.
+
+For example:
+
+X:1
+T: Booth Shot Lincoln
+C: Traditional
+C: Arr. Pete Showman
+R: Reel
+Q: 1/2=90
+M: 2/2
+L: 1/8
+K:A
+|| y20 "A"ce2c e2ee | "D"fa2f a2fe- | \
+"A"eBcB AcBA | "D"F3F F2FF |
+%%MidiOff
+%%begintext
+ The next lines will not be played
+%%endtext
+%%MidiOn
+
+The commands %%MidiOff and %%MidiOn, delineate a block
+of text that we do not want the parser to process. Otherwise,
+all the e's, b, a and d in the line "The next lines..."
+be treated as notes to be played in the output midi file.
+
+
+Implementation:
+Introduced a new global in parseabc.c, int ignore_line, which
+is either 0 or 1. When it is set to 1, parseline() in parseabc.c
+will ignore that line. ignore_line is automatically initialized
+to 0 any time a new X: command is encountered.
+
+
+April 16 2017
+
+Fixed a bug I introduced in parseabc.c on April 12 2017.
+
+Had changed
+parse_precomment (s)
+     char *s;
+
+to
+
+parse_precomment (s)
+     char **s;
+
+in order to eliminate a compiler warning; however,
+this caused abc2midi to treat %%MIDI as a text comment.
+
+
+April 19 2017
+
+Abc2abc invisible rest bug: the invisible multirest X gets
+transposed to Z. When transposing the following tune,
+
+X:1
+T: Invisible rests
+M: 4/4
+L: 1/4
+K: G
+ABcx|X2|
+
+X is changed to Z
+
+Analysis: parsemusic() in parseabc.c treats the multirests
+X and Z the same way in event_mrest().
+
+Fix: added a char parameter to event_mrest() so it knows
+whether it is a X or a Z. This effects store.c, toabc.c,
+yapstree.c and matchsup.c.
 
