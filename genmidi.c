@@ -88,6 +88,7 @@ extern int *stressvelocity; /* [SS] 2011-08-17 */
 extern int notes;
 extern int barflymode; /* [SS] 2011-08-24 */
 extern int stressmodel; /* [SS] 2011-08-26 */
+extern int programbase; /* [SS] 2017-06-02 */
 
 extern int verbose;
 extern int quiet;
@@ -1649,6 +1650,8 @@ int p, channel;
 {
   char data[1];
 
+  p = p - programbase; /* [SS] 2017-06-02 */
+  if (p <0) p = 0; /* [SS] 2017-06-02 */
   data[0] = p;
   if (channel >= MAXCHANS) {
     event_error("Channel limit exceeded\n");

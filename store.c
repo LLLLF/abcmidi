@@ -184,7 +184,7 @@ int main()
 
  */
 
-#define VERSION "3.95 April 19 2017 abc2midi" 
+#define VERSION "3.96 June 02 2017 abc2midi" 
 
 /* enables reading V: indication in header */
 #define XTEN1 1
@@ -451,6 +451,7 @@ int middle_c;
 extern int channel_in_use[MAXCHANS + 3]; /* 2015-03-16 formerly channels[] */
 extern int additive;
 int gfact_num, gfact_denom, gfact_method;  /* for handling grace notes */
+int programbase = 0; /* [SS] 2017-06-02 */
 
 /* karaoke handling */
 int karaoke, wcount;
@@ -1892,6 +1893,17 @@ char *s;
       middle_c = val;
       done = 1;
     }
+
+    /* [SS] 2017-06-02 */
+    else if (strcmp(command,"programbase") == 0) {
+      int val;
+      skipspace(&p);
+      val = readnump(&p);
+      if (val != 0) val=1;
+      programbase = val;
+      done = 1;
+      }
+
 
     else if (strcmp(command, "nobarlines") == 0) {
      propagate_accidentals = 0; /* [SS] 2015-08-18 */

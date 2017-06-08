@@ -12044,7 +12044,7 @@ K: G
 A3/2 B/ A/ B3/2|A>B A<B|
 
 Thus for the above example, both bars will now sound the same unless
-abc2midi is run with the -RS option. The command
+abc2midi is run with the -CS option. The command
 %%MIDI ratio 2 1
 still works as before.
 
@@ -12331,4 +12331,47 @@ X and Z the same way in event_mrest().
 Fix: added a char parameter to event_mrest() so it knows
 whether it is a X or a Z. This effects store.c, toabc.c,
 yapstree.c and matchsup.c.
+
+
+
+June 02 2017
+
+Abc2midi: Some of the documentation which comes with abc2midi
+states that the MIDI program number should range between 1 and 128;
+however, as far back as 2003, abc2midi expects the range to be
+between 0 and 127 following the MIDI standard. The documentation
+abcguide.txt and the man page abc2midi.1 have been corrected.
+Unfortunately, the Abc standard was based on the old documentation.
+It is too late to change abc2midi to comply with the abc standard
+since there are too many abc existing files using the current
+convention. As a temporary compromise, I have added a new
+command %%MIDI programbase.
+
+The current default is (so you do not need this line).
+%%MIDI programbase 0
+
+To change to the abc standard use
+%%MIDI programbase 1
+
+Implementation: added global 
+int programbase = 0;
+to store.s which can be modified by the %%MIDI programbase command.
+
+Genmidi.c links to programbase using an extern statement and
+in the function write_program() I added the lines.
+ p = p - programbase; /* [SS] 2017-06-02 */
+ if (p <0) p = 0; /* [SS] 2017-06-02 */
+
+Test file:
+
+%%MIDI programbase 1
+X:1
+T: timpani
+% The timpani has MIDI program number 47 if you count from 0
+% or 48 if you count from 1.
+M: 2/4
+L: 1/8
+K: C
+%%MIDI program 48
+CCDD|EEFF|CDEF|CDEF|
 
