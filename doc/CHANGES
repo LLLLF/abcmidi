@@ -12375,3 +12375,40 @@ K: C
 %%MIDI program 48
 CCDD|EEFF|CDEF|CDEF|
 
+
+June 10 2017
+
+Abcmidi: !shape! bug
+
+In the following example:
+
+X: 1
+%%MIDIdef peta bendstring 0 0     900 900 0  -900 -900 0  -400
+%%MIDIdef volon125 controlstring 11 125
+T: shape bug
+C: 1
+M: 4/4
+L: 1/4
+Q:1/4=130
+K: C
+%%MIDI program 64
+AGGF|\
+[I: MIDIx= peta]!bend!F[I: MIDIx=volon125]!shape!GAB|
+
+The note G in the second bar following !shape! is held
+too long.
+
+Analysis: note_effect5 ends a note with
+   midi_noteoff(delta, Q[Qhead].pitch, Q[Qhead].chan);
+however the delta does not account of the numerous pitchbend 
+commands which has shifted the time base to the end of the
+note.
+
+Fix: computed  last_delta = delta - eventlist[j-1].time; /* [SS] 2017-06-10 */
+and used that to end the note.
+midi_noteoff(last_delta, Q[Qhead].pitch, Q[Qhead].chan);
+
+
+
+
+
